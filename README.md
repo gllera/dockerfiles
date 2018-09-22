@@ -20,7 +20,7 @@ docker run -it --rm \
    -e AWS_ACCESS_KEY_ID=AAAA123123BBBB31CCCC \
    -e AWS_SECRET_ACCESS_KEY=aaaabbbbssVVVaasv2312w+3fdsdf32fewVdasAA \
    -e ZONEID=AAAAAAABBBBB11 \
-   -e RECORDSET=www.example.com \
+   -e RECORDSET='*.example.com example.com' \
    -e TTL=150 \
    gllera/dns-update
 ```
