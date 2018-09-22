@@ -16,6 +16,32 @@ if [ -z "$ISVALID" ]; then
     exit 1
 fi
 
+print_changes() {
+   RESULT=""
+   for NAME in $RECORDS; do
+      [ ! -z "$RESULT" ] && RESULT="$RESULT,"
+      
+      RESULT="$RESULT$(cat << EOF 
+      {
+        "Action":"UPSERT",
+        "ResourceRecordSet":{
+          "ResourceRecords":[
+            {
+              "Value":"$IP"
+            }
+          ],
+          "Name":"$NAME",
+          "Type":"$TYPE",
+          "TTL":$TTL
+        }
+      }
+EOF
+)"
+   done
+
+   echo "$RESULT"
+}
+
 if grep -Fxq "$IP" "$IPFILE"; then
     [ -z "$1" ] || echo "IP is still $IP. Exiting"
     exit 0
@@ -26,21 +52,7 @@ else
     cat > ${TMPFILE} << EOF
     {
       "Comment":"$COMMENT",
-      "Changes":[
-        {
-          "Action":"UPSERT",
-          "ResourceRecordSet":{
-            "ResourceRecords":[
-              {
-                "Value":"$IP"
-              }
-            ],
-            "Name":"$RECORDSET",
-            "Type":"$TYPE",
-            "TTL":$TTL
-          }
-        }
-      ]
+      "Changes":[ `print_changes` ]
     }
 EOF
 
