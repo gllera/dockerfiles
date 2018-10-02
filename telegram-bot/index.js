@@ -9,13 +9,13 @@ const conf = require('./conf')
 const app = express()
 
 app.use(bodyParser.json())
-app.use(telegram.middleware)
+app.use(telegram.Middleware)
 
 app.get('/send', (req, res) => {
     if (!req.query.msg)
         return res.sendStatus(400)
 
-    telegram.send(req.query.msg)
+    telegram.Send(req.query.msg)
     return res.sendStatus(200)
 })
 
@@ -23,16 +23,16 @@ app.post('/send', (req, res) => {
     if (!req.body.msg)
         return res.sendStatus(400)
 
-    telegram.send(req.body.msg)
+    telegram.Send(req.body.msg)
     return res.sendStatus(200)
 })
 
 app.use((_, res) => {
-    res.status(400).send('Sorry, bad request')
+    res.status(400).send('Bad request')
 })
 
 async.waterfall([
-    (cb) => telegram.init(cb),
+    (cb) => telegram.Init(cb),
     (cb) => app.listen(conf.PORT, cb)
 ], (err) => {
     assert.equal(null, err, err)
